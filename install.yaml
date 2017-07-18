@@ -1,0 +1,26 @@
+#!/usr/bin/env ansible-playbook
+---
+- name: Check if all OpenShift's Hosts is registered using Red Hat's Subscription Manager
+  hosts: openshift-hosts
+  roles: 
+     - rhmap_subscribe
+
+- name: Installing LATAM Red Hat Forum 2017 Demo
+  hosts: localhost
+  connection: local
+  gather_facts: False
+  tasks:
+     - name: Log as OpenShift's Administrator{{ ':' }} system:admin
+       command: oc login --username=system:admin --insecure-skip-tls-verify
+       tags:
+          - check
+  roles: 
+     - rhmap_core
+     - rhmap_mbaas
+     - tower
+     - cloudforms
+     - locust
+     - tooling
+     - business_central
+     - microservices
+     - rhmap_config

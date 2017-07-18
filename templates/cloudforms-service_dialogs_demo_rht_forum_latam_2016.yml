@@ -1,0 +1,191 @@
+---
+- description: Delete Red Hat Forum LATAM 2016 Demo Apps
+  buttons: submit,cancel
+  label: OpenShift - Delete RHT Forum LATAM 2016 Apps
+  blueprint_id: 
+  dialog_tabs:
+  - description: 
+    display: edit
+    label: Basic Information
+    display_method: 
+    display_method_options: 
+    position: 0
+    dialog_groups:
+    - description: 
+      display: edit
+      label: Extra Variables
+      display_method: 
+      display_method_options: 
+      position: 0
+      dialog_fields:
+      - name: param_microservices_namespace
+        description: Microservices Namespace
+        data_type: string
+        notes: 
+        notes_display: 
+        display: edit
+        display_method: 
+        display_method_options: {}
+        required: false
+        required_method: 
+        required_method_options: {}
+        default_value: microservices
+        values: 
+        values_method: 
+        values_method_options: {}
+        options:
+          :protected: false
+        label: Microservices Namespace
+        position: 0
+        validator_type: 
+        validator_rule: 
+        reconfigurable: true
+        dynamic: 
+        show_refresh_button: 
+        load_values_on_init: 
+        read_only: true
+        auto_refresh: 
+        trigger_auto_refresh: 
+        visible: true
+        type: DialogFieldTextBox
+        resource_action:
+          action: 
+          resource_type: DialogField
+          ae_namespace: 
+          ae_class: 
+          ae_instance: 
+          ae_message: 
+          ae_attributes: {}
+- description: Create Red Hat Forum LATAM 2016 Demo Apps
+  buttons: submit,cancel
+  label: OpenShift - Create RHT Forum LATAM 2016 Apps
+  blueprint_id: 
+  dialog_tabs:
+  - description: 
+    display: edit
+    label: Basic Information
+    display_method: 
+    display_method_options: 
+    position: 0
+    dialog_groups:
+    - description: 
+      display: edit
+      label: Extra Variables
+      display_method: 
+      display_method_options: 
+      position: 0
+      dialog_fields:
+      - name: param_tooling_namespace
+        description: Tooling Namespace
+        data_type: string
+        notes: 
+        notes_display: 
+        display: edit
+        display_method: 
+        display_method_options: {}
+        required: false
+        required_method: 
+        required_method_options: {}
+        default_value: tooling
+        values: 
+        values_method: 
+        values_method_options: {}
+        options:
+          :protected: false
+        label: Tooling Namespace
+        position: 0
+        validator_type: 
+        validator_rule: 
+        reconfigurable: true
+        dynamic: 
+        show_refresh_button: 
+        load_values_on_init: 
+        read_only: true
+        auto_refresh: 
+        trigger_auto_refresh: 
+        visible: true
+        type: DialogFieldTextBox
+        resource_action:
+          action: 
+          resource_type: DialogField
+          ae_namespace: 
+          ae_class: 
+          ae_instance: 
+          ae_message: 
+          ae_attributes: {}
+      - name: param_microservices_namespace
+        description: Microservices Namespace
+        data_type: string
+        notes: 
+        notes_display: 
+        display: edit
+        display_method: 
+        display_method_options: {}
+        required: false
+        required_method: 
+        required_method_options: {}
+        default_value: microservices
+        values: 
+        values_method: 
+        values_method_options: {}
+        options:
+          :protected: false
+        label: Microservices Namespace
+        position: 1
+        validator_type: 
+        validator_rule: 
+        reconfigurable: true
+        dynamic: false
+        show_refresh_button: 
+        load_values_on_init: 
+        read_only: true
+        auto_refresh: 
+        trigger_auto_refresh: 
+        visible: true
+        type: DialogFieldTextBox
+        resource_action:
+          action: 
+          resource_type: DialogField
+          ae_namespace: 
+          ae_class: 
+          ae_instance: 
+          ae_message: 
+          ae_attributes: {}
+      - name: param_username
+        description: OpenShift User
+        data_type: string
+        notes: 
+        notes_display: 
+        display: edit
+        display_method: 
+        display_method_options: {}
+        required: false
+        required_method: 
+        required_method_options: {}
+        default_value: demo
+        values: 
+        values_method: 
+        values_method_options: {}
+        options:
+          :protected: false
+        label: OpenShift User
+        position: 2
+        validator_type: 
+        validator_rule: 
+        reconfigurable: true
+        dynamic: 
+        show_refresh_button: 
+        load_values_on_init: 
+        read_only: true
+        auto_refresh: 
+        trigger_auto_refresh: 
+        visible: true
+        type: DialogFieldTextBox
+        resource_action:
+          action: 
+          resource_type: DialogField
+          ae_namespace: 
+          ae_class: 
+          ae_instance: 
+          ae_message: 
+          ae_attributes: {}

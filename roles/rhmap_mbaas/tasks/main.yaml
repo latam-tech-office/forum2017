@@ -1,0 +1,47 @@
+- name: Installing all the necessary templates for RHMAP
+  yum: name={{ item }} state=present
+  with_items: "{{ rhmap_subscription_manager_templates }}"
+  tags:
+     - templates
+     - rhmap
+
+- name: Delete any previously created Project named \"{{ rhmap_project_mbaas }}\"
+  command: oc delete project {{ rhmap_project_mbaas }}
+  ignore_errors: True
+  tags:
+     - mbaas
+     - rhmap
+     - rhmap_mbaas
+ 
+- name: "Create a MBaaS Project named \"{{ rhmap_project_mbaas }}\""
+  command: "oadm new-project {{ rhmap_project_mbaas }} --display-name=\"RHMAP MBaaS{{ ':' }} LATAM Red Hat Forum 2017\" --admin={{ username }}"
+  register: create_namespace
+  until: create_namespace.rc == 0
+  retries: 25
+  delay: 10
+  tags:
+     - mbaas
+     - rhmap
+     - rhmap_mbaas
+
+- name: "Make sure this project runs only on a Node {{ rhmap_selector_mbaas }}"
+  command: "oc patch namespace/{{ rhmap_project_mbaas }} --patch='{\"metadata\": {\"annotations\": {\"openshift.io/node-selector\": \"{{ rhmap_selector_mbaas }}\" }}}' --namespace {{ rhmap_project_mbaas }}"
+  when: rhmap_selector_mbaas is defined
+  tags:
+     - mbaas
+     - rhmap
+     - rhmap_mbaas
+
+#- name: "Create the MBaaS Resources, using 3 Nodes" 
+#  command: "oc new-app --file {{ rhmap_directory_rhmap }}/mbaas/fh-mbaas-template-3node.json --namespace {{ rhmap_project_mbaas }}"
+#  tags:
+#     - mbaas
+#     - rhmap
+#     - rhmap_mbaas
+
+- name: "Create the MBaaS Resources, using 3 Nodes"
+  command: "oc new-app --file templates/rhmap/fh-mbaas-template-3node.json --namespace {{ rhmap_project_mbaas }}"
+  tags:
+     - mbaas
+     - rhmap
+     - rhmap_mbaas

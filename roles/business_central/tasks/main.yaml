@@ -1,0 +1,206 @@
+- name: JBoss Installers are needed for this playbook   
+  debug: msg="Be sure the {{ item.name }} file{{ ':' }} templates/rhcs-bc/installs/{{ item.filename }} exists ? Available at {{ item.url }}"
+  with_items: "{{ jboss_installers }}"
+  tags:  
+     - business_central
+ 
+- name: Checking if JBoss Installers are avaible at templates/rhcs-bc/installs
+  stat: path=templates/rhcs-bc/installs/{{ item.filename }}
+  with_items: "{{ jboss_installers }}"
+  register: jboss_installer_file
+  failed_when: jboss_installer_file.stat.exists == False
+  tags:  
+     - business_central
+     - check
+
+- name: Modifying all the installers so they have Running permissions
+  file: path=templates/rhcs-bc/installs/{{ item.filename }} mode="u+x"
+  with_items: "{{ jboss_installers }}"
+  tags:  
+     - business_central
+
+- name: Fetch Gogs's Port Address
+  command: oc get service/gogs --output jsonpath='{..spec.ports[?(@.name=="web")].port}' --namespace {{ tooling_namespace }}
+  register: gogs_port
+  failed_when: gogs_port.rc != 0
+  tags:
+     - business_central
+     - gogs
+
+- name: Define Gogs's
+  set_fact: gogs_url="gogs.{{ tooling_namespace }}.svc.cluster.local{{ ':' }}{{ gogs_port.stdout }}"
+  tags:
+     - business_central
+     - gogs
+
+- name: Wait for Gogs to be ready{{ ":" }} {{ gogs_url }}
+  uri: url="http://{{ gogs_url }}" status_code=200 
+  register: gogs_wait
+  until: gogs_wait.status == 200
+  retries: 60
+  delay: 10
+  tags: 
+    - business_central
+    - gogs
+
+#### Creating the Project/Namespace 
+- name: Delete any previously projects already created
+  command: oc delete project {{ businesscentral_namespace }} 
+  ignore_errors: True
+  tags: 
+     - business_central
+     - project_creation
+
+- name: Create a new project name {{ businesscentral_namespace }} for a user {{ username }}
+  command: oadm new-project {{ businesscentral_namespace }} --display-name="Business Central{{ ':' }} LATAM Red Hat Forum 2017" --admin={{ username }}
+  register: project_creation
+  until: project_creation.rc == 0
+  retries: 30
+  delay: 15
+  tags:
+     - business_central
+     - project_creation
+
+- name: Adjust the Policies so Business Central doesn't have problems running on top of OpenShift
+  command: oadm policy add-scc-to-user anyuid --namespace {{ businesscentral_namespace }} --serviceaccount=default
+  tags:
+     - business_central
+     - project_creation
+
+- name: Create a ImageStream based on JBoss Demo Central{{ ':' }} jbossdemocentral/developer
+  command: oc new-build "jbossdemocentral/developer" --name=business-central --binary=true --namespace {{ businesscentral_namespace }}
+  tags: 
+     - business_central
+     - project_creation
+
+- name: Added some variables used for Docker Build 
+  command: oc env buildconfig/business-central GOGS_URL="{{ gogs_url }}" GOGS_USERNAME="{{ username }}" GOGS_PASSWORD="{{ password }}" --namespace {{ businesscentral_namespace }}
+  tags:
+     - business_central
+     - project_creation
+
+- name: Import the newly Docker Image created to a ImageStream in the current Project
+  command: oc import-image --confirm=true --insecure=true developer --namespace {{ businesscentral_namespace }}
+  register: image_import
+  until: image_import.rc == 0
+  retries: 5
+  delay: 15
+  tags:
+     - business_central
+     - project_creation
+
+- name: Start building based on a content at "templates/rhcs-bc/"
+  command: oc start-build business-central --from-dir=templates/rhcs-bc/ --follow=true --wait=true --namespace {{ businesscentral_namespace }}
+  tags:
+     - business_central
+     - project_creation
+
+- name: Create a new application based on this ImageStream{{ ':' }} business-central
+  command: oc new-app business-central --namespace {{ businesscentral_namespace }}
+  tags:
+     - business_central
+     - project_creation
+
+- name: Delete any previous ConfigMap previously created
+  command: oc delete configmap/configrepo-businesscentral --namespace {{ businesscentral_namespace }}
+  ignore_errors: True
+  tags:
+     - business_central
+     - project_creation
+     - configmap
+
+- name: Generate a ConfigMap based on a template{{ ':' }} templates/business-central-configmap.yaml.j2
+  template: src=templates/business-central-configmap.yaml.j2 dest=/tmp/business-central-configmap.yaml
+  tags:
+     - business_central
+     - project_creation
+     - configmap
+
+- name: Create a ConfigMap 
+  command: oc create --filename /tmp/business-central-configmap.yaml --namespace {{ businesscentral_namespace }}
+  tags:
+     - business_central
+     - project_creation
+     - configmap
+
+- name: Patch DeploymentConfig to run ConfigMap every time starts
+  command: oc patch deploymentconfig/business-central --patch '{"spec"{{ ':' }} {"template"{{ ':' }} {"metadata"{{ ':' }} {"annotations"{{ ':' }} {"openshift.io/container.business-central.image.entrypoint"{{ ':' }} "[\"bash\", \"/tmp/config.sh;\",\"/opt/jboss/brms/jboss-eap-6.4/bin/standalone.sh\",\"-c\",\"standalone.xml\",\"-b\",\"0.0.0.0\",\"-bmanagement\",\"0.0.0.0\",\"-Djboss.as.management.blocking.timeout=3600\"]"}},"spec"{{ ':' }} {"volumes"{{ ':' }} [{"name"{{ ':' }} "script-volume","configMap"{{ ':' }} { "name"{{ ':' }} "configrepo-businesscentral", "items"{{ ':' }} [{"key"{{ ':' }} "config.sh","path"{{ ':' }} "config.sh"}], "defaultMode"{{ ':' }} 420 }}],"containers"{{ ':' }} [{"name"{{ ':' }} "business-central", "volumeMounts"{{ ':' }} [{"name"{{ ':' }} "script-volume","mountPath"{{ ':' }} "/tmp"}]}]}}}}' --namespace {{ businesscentral_namespace }}
+  tags:
+     - business_central
+     - project_creation
+     - configmap
+
+- name: Create Persistent Volume Claims for Business Central
+  command: oc create --filename templates/business-central-persistentvolumeclaims.yaml --namespace {{ businesscentral_namespace }}
+  tags:
+     - business_central
+     - project_creation
+     - persistent_volume
+
+- name: Create Volumes for this Persistent Volume Claim
+  command: oc volume deploymentconfig/business-central --name=business-central-data --add --mount-path=/opt/jboss/brms/jboss-eap-6.4/bin/.niogit/ --claim-name=business-central --namespace {{ businesscentral_namespace }}
+  tags:
+     - business_central
+     - project_creation
+     - persistent_volume
+
+- name: Expose the route as business-central.{{ openshift_cloudapps_domain }} 
+  command: oc expose service business-central --hostname=business-central.{{ openshift_cloudapps_domain }} --namespace {{ businesscentral_namespace }}
+  tags:
+     - business_central
+     - project_creation
+
+- name: Fetch Business Central Port Number
+  command: oc get service/business-central --output jsonpath='{..spec.ports[?(@.name=="8080-tcp")].port}' --namespace {{ businesscentral_namespace }}
+  register: business_central_port
+  tags:
+     - business_central
+
+- name: Define Business Central's URL
+  set_fact: business_central_address="http{{ ':' }}//business-central.{{ businesscentral_namespace }}.svc.cluster.local{{ ':' }}{{ business_central_port.stdout }}"
+  tags:
+     - business_central
+
+- name: Waiting Business Central to be Up{{ ':' }} {{ business_central_address }}
+  uri: url="{{ business_central_address }}" status_code=200
+  register: business_central_wait
+  until: business_central_wait.status == 200
+  retries: 60
+  delay: 10
+  tags:
+     - business_central
+
+- name: Waiting Business Central Application to be Up{{ ':' }} {{ business_central_address }}/business-central
+  uri: url="{{ business_central_address }}/business-central" status_code=200
+  register: business_central_wait
+  until: business_central_wait.status == 200
+  retries: 60
+  delay: 10
+  tags:
+     - business_central
+
+- name: Wait Business Central to settle down a while
+  pause: seconds=60
+  tags:
+     - business_central
+  
+- name: Setting Up Organization Unit at Business Central Name{{ ':' }} TechOffice. HardCoded username{{ ':' }} demo, password{{ ':' }}jbossbrms1!
+  uri: method=POST body_format=json url={{ business_central_address }}/business-central/rest/organizationalunits/
+       status_code=202  HEADER_Content-type="application/json"
+       user='demo' password='jbossbrms1!' force_basic_auth=yes return_content=yes 
+       body="{\"name\"{{ ':' }}\"techoffice\",\"owner\"{{ ':' }}\"demo\",\"description\"{{ ':' }}null,\"repositories\"{{ ':' }}[]}"
+  tags:
+     - business_central
+
+- name: Wait Business Central to settle down a while
+  pause: seconds=20
+  tags:
+     - business_central
+
+- name: Setting Up Repositories at Business Central Name{{ ':' }} TechOffice. HardCoded username{{ ':' }} demo, password{{ ':' }}jbossbrms1!
+  uri: method=POST body_format=json url={{ business_central_address }}/business-central/rest/repositories/
+       status_code=202  HEADER_Content-type="application/json"
+       user='demo' password='jbossbrms1!' force_basic_auth=yes return_content=yes                  
+       body="{\"name\"{{ ':' }}\"brms\",\"description\"{{ ':' }}null,\"requestType\"{{ ':' }}\"new\",\"gitURL\"{{ ':' }}null,\"organizationalUnitName\"{{ ':' }}\"techoffice\"}"
+  tags:
+     - business_central
