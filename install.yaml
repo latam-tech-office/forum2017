@@ -15,6 +15,7 @@
        tags:
           - check
   roles: 
+     - 3scale
      - rhmap_core
      - rhmap_mbaas
      - tower

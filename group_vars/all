@@ -102,3 +102,7 @@ microservices_namespace: microservices
 fuse_service_id: 
 fuse_service_token: 
 fuse_user_key: 
+
+### 3SCALE  3SCALE  3SCALE  3SCALE  3SCALE  3SCALE  3SCALE  3SCALE  3SCALE  3SCALE  3SCALE  3SCALE  3SCALE  3SCALE 
+###  3SCALE  3SCALE  3SCALE  3SCALE  3SCALE  3SCALE  3SCALE  3SCALE  3SCALE  3SCALE  3SCALE  3SCALE  3SCALE  3SCALE
+3scale_namespace: 3scale

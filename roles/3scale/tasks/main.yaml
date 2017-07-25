@@ -1,0 +1,19 @@
+- name: Delete any existing namespaces
+  command: oc delete project {{ 3scale_namespace }}
+  ignore_errors: True
+  tags:
+     - 3scale
+
+- name: Creating the Project{{ ':' }} {{ 3scale_namespace }}
+  command: oadm new-project {{ 3scale_namespace }} --display-name="3Scale AMP {{ ":" }} LATAM Red Hat Forum 2017" --admin={{ username }}
+  register: create_namespace
+  until: create_namespace.rc == 0
+  retries: 10
+  delay: 10
+  tags:
+     - 3scale
+
+- name: Create a New Application based on the template
+  command: oc new-app 3scale --namespace {{ 3scale_namespace }} --template=templates/amp_cors.yml --param=ADMIN_PASSWORD=admin --param=WILDCARD_DOMAIN=3scale.cloudapps.forum.rhtechofficelatam.com
+  tags:
+     - 3scale
