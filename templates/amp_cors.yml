@@ -2090,6 +2090,19 @@ objects:
     kind: ConfigMap
     metadata: 
       name: redis-config
+  - 
+    apiVersion: v1
+    data: 
+      address: ""
+      authentication: ""
+      domain: ""
+      openssl.verify.mode: ""
+      password: ""
+      port: ""
+      username: ""
+    kind: ConfigMap
+    metadata: 
+      name: smtp
 parameters: 
   - 
     description: "AMP release tag."
