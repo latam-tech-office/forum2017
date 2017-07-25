@@ -1,7 +1,7 @@
 ---
-- description: Delete Red Hat Forum LATAM 2016 Demo Apps
+- description: Delete Red Hat Forum LATAM 2017 Demo Apps
   buttons: submit,cancel
-  label: OpenShift - Delete RHT Forum LATAM 2016 Apps
+  label: OpenShift - Delete RHT Forum LATAM 2017 Apps
   blueprint_id: 
   dialog_tabs:
   - description: 
@@ -56,9 +56,9 @@
           ae_instance: 
           ae_message: 
           ae_attributes: {}
-- description: Create Red Hat Forum LATAM 2016 Demo Apps
+- description: Create Red Hat Forum LATAM 2017 Demo Apps
   buttons: submit,cancel
-  label: OpenShift - Create RHT Forum LATAM 2016 Apps
+  label: OpenShift - Create RHT Forum LATAM 2017 Apps
   blueprint_id: 
   dialog_tabs:
   - description: 

@@ -1,5 +1,5 @@
-<h1><a href="https://www.gitbook.com/book/latam-tech-office/forumdemo">LATAM Red Hat Forum 2016 Demo</a></h1>
-This is a demo shown during <a href="https://www.redhat.com/en/about/events">LATAM Red Hat Forum 2016</a> featuring several applications from Red Hat portfolio by delivering an ficticious Travel Agency scenario. Every application here runs in a container on top of <a href="https://docs.openshift.com/container-platform/3.4/welcome/index.html">OpenShift Container Platform</a> with minimum of 6 Nodes, all data will be persisted after reboots.<br/>
+<h1><a href="https://www.gitbook.com/book/latam-tech-office/forumdemo">LATAM Red Hat Forum 2017 Demo</a></h1>
+This is a demo shown during <a href="https://www.redhat.com/en/about/events">LATAM Red Hat Forum 2017</a> featuring several applications from Red Hat portfolio by delivering an ficticious Travel Agency scenario. Every application here runs in a container on top of <a href="https://docs.openshift.com/container-platform/3.4/welcome/index.html">OpenShift Container Platform</a> with minimum of 6 Nodes, all data will be persisted after reboots.<br/>
 
 <h2><a href="https://www.gitbook.com/book/latam-tech-office/forumdemo">A detail instructions of how every application works, troubleshooting and more is available</a></h2>
 
@@ -77,10 +77,10 @@ After installation, you're going to get an environment with the following applic
 
     ```
 
-6. You need to download an <a href="https://www.ansible.com/tower">Ansible Tower</a> license and leave it at the same directory as the installer: <b>/2016-forum</b><br/>
+6. You need to download an <a href="https://www.ansible.com/tower">Ansible Tower</a> license and leave it at the same directory as the installer: <b>/forum2017</b><br/>
    The file should look like: <b>license_b4451138a1234212ac8476cc756a08e9.txt</b>
 
-7. You need to download 3 jar files needed by Business Central and copy then into the folder: <br/><b>/2016-forum/templates/rhcs-bc/installs/</b>
+7. You need to download 3 jar files needed by Business Central and copy then into the folder: <br/><b>/forum2017/templates/rhcs-bc/installs/</b>
 
    File <a href="https://access.redhat.com/jbossnetwork/restricted/softwareDownload.html?softwareId=37383">jboss-eap-6.4.0-installer.jar</a>   
    <a href="https://access.redhat.com/jbossnetwork/restricted/softwareDownload.html?softwareId=37383">https://access.redhat.com/jbossnetwork/restricted/softwareDownload.html?softwareId=37383</a>
@@ -91,7 +91,7 @@ After installation, you're going to get an environment with the following applic
    File <a href="https://access.redhat.com/jbossnetwork/restricted/softwareDownload.html?softwareId=43631">jboss-brms-6.3.0.GA-installer.jar</a>         
    <a href="https://access.redhat.com/jbossnetwork/restricted/softwareDownload.html?softwareId=43631">https://access.redhat.com/jbossnetwork/restricted/softwareDownload.html?softwareId=43631</a>
 
-8. Check the file <b>/2016-forum/hosts</b> and it should match all your hosts of your cluster. In this example, there is a <a href="https://docs.openshift.com/container-platform/3.4/welcome/index.html">OpenShift's Cluster</a> with 8 hosts named: <i>master.example.com, infra.example.com, node1.example.com, node2.example.com, node3.example.com, node4.example.com, node5.example.com and node6.example.com.</i>
+8. Check the file <b>/forum2017/hosts</b> and it should match all your hosts of your cluster. In this example, there is a <a href="https://docs.openshift.com/container-platform/3.4/welcome/index.html">OpenShift's Cluster</a> with 8 hosts named: <i>master.example.com, infra.example.com, node1.example.com, node2.example.com, node3.example.com, node4.example.com, node5.example.com and node6.example.com.</i>
 
     ```
     # cat hosts
@@ -103,7 +103,7 @@ After installation, you're going to get an environment with the following applic
 
     Adjust this file accordingly.
 
-9. Check the file <b>/2016-forum/group_vars/all</b> which contains most of the variables necessary to setup all applications. Modfied any information to suit your needs. For example, all applications will be installed for user 'demo'. If you want to be installed on a different user, change the property "username" on this file. 
+9. Check the file <b>/forum2017/group_vars/all</b> which contains most of the variables necessary to setup all applications. Modfied any information to suit your needs. For example, all applications will be installed for user 'demo'. If you want to be installed on a different user, change the property "username" on this file. 
 
    
 ## When you've done all that

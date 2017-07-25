@@ -5,7 +5,7 @@ After=atomic-openshift-node.service
 [Service]
 WorkingDirectory=/root
 Environment=KUBECONFIG=/root/.kube/config
-ExecStart=/root/2016-forum/install.yaml --tags reconfigtower
+ExecStart=/root/forum2017/install.yaml --tags reconfigtower
 
 [Install]
 WantedBy=atomic-openshift-node.service
