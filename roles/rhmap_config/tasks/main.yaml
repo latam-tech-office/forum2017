@@ -187,8 +187,8 @@
      - rhmap
      - rhmap_config_demo
 
-- name: Git clone project{{ ':' }} https{{ ':' }}//github.com/latam-tech-office/fhMobileApp
-  command: git clone https://github.com/latam-tech-office/fhMobileApp /tmp/fhMobileApp
+- name: Git clone project{{ ':' }} https{{ ':' }}//github.com/latam-tech-office/fhMobileApp2017
+  command: git clone https://github.com/latam-tech-office/fhMobileApp2017 /tmp/fhMobileApp
   tags:
      - rhmap_config
      - rhmap
@@ -208,8 +208,8 @@
      - rhmap
      - rhmap_config_demo
 
-- name: Git clone project{{ ':' }} https{{ ':' }}//github.com/latam-tech-office/fhCloudApp
-  command: git clone https://github.com/latam-tech-office/fhCloudApp /tmp/fhCloudApp
+- name: Git clone project{{ ':' }} https{{ ':' }}//github.com/latam-tech-office/fhCloudApp2017
+  command: git clone https://github.com/latam-tech-office/fhCloudApp2017 /tmp/fhCloudApp
   tags:
      - rhmap_config
      - rhmap
