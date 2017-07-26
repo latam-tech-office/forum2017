@@ -31,6 +31,10 @@
     service_id: "{{ service.json |  json_query('service.id') }}"
   tags:
      - 3scale_config
+- set_fact:
+    fuse_service_id: "{{ service_id }}"
+  tags:
+     - 3scale_config
 - debug: 
     msg: "service ID: {{ service_id }}"
   tags:
@@ -158,3 +162,23 @@
   register: account
   tags:
      - 3scale_config
+- set_fact:
+    account_id: "{{ account.json | json_query('account.id') }}"
+  tags:
+    - 3scale_config
+- name: Create Application
+  uri:
+    url: "http://system-provider.3scale.svc.cluster.local:3000/admin/api/accounts/{{ account_id }}/applications.json"
+    method: POST
+    body: "access_token={{access_token.stdout}}&application_plan_id={{ application_plan_id}}&name=RHTravel&description=RHTravel+App"
+    status_code: 201
+    headers:
+      Content-Type: "application/x-www-form-urlencoded"
+    validate_certs: no
+  register: application
+  tags:
+     - 3scale_config
+- set_fact:
+    fuse_user_key: "{{ application.json | json_query('application.user_key') }}"
+  tags:
+    - 3scale_config
