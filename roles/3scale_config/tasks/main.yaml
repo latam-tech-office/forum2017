@@ -1,0 +1,160 @@
+- name: Wait for 3Scale Admin service to be available
+  uri: url="http://system-provider.3scale.svc.cluster.local:3000" status_code=200
+  register: threescale_wait
+  until: threescale_wait.status == 200
+  retries: 60
+  delay: 10
+  tags:
+    - 3scale_config
+- name: Get ADMIN_ACCESS_TOKEN 
+  command: oc env dc system-app -n 3scale -c 'system-provider' -o jsonpath='{$.spec.template.spec.containers[?(@.name=="system-provider")].env[?(@.name=="ADMIN_ACCESS_TOKEN")].value}'
+  register: access_token
+  tags:
+     - 3scale_config
+- name: Install jmespath
+  command: easy_install jmespath
+  tags:
+    - 3scale_config
+- name: Create API
+  uri:
+    url: http://system-provider.3scale.svc.cluster.local:3000/admin/api/services.json
+    method: POST
+    body: "access_token={{access_token.stdout}}&name=RHTravel+API&system_name=rhtravel_api"
+    status_code: 201
+    headers:
+      Content-Type: "application/x-www-form-urlencoded"
+    validate_certs: no
+  register: service
+  tags:
+     - 3scale_config
+- set_fact: 
+    service_id: "{{ service.json |  json_query('service.id') }}"
+  tags:
+     - 3scale_config
+- debug: 
+    msg: "service ID: {{ service_id }}"
+  tags:
+     - 3scale_config
+- set_fact: 
+    metric_id: "{{ service.json|json_query(\"service.links[?rel=='metrics'].href | [0]\")|regex_replace('.*/services/(.*)/metrics','\\1')  }}"
+  tags:
+     - 3scale_config
+- debug:
+    msg: "metric ID: {{ metric_id }}"
+  tags:
+     - 3scale_config
+- name: Create Method - Hotel
+  uri:
+    url: "http://system-provider.3scale.svc.cluster.local:3000/admin/api/services/{{ service.json.service.id }}/metrics/{{ metric_id  }}/methods.json"
+    method: POST
+    body: "access_token={{access_token.stdout}}&friendly_name=Book+Hotel&system_name=book_hotel&unit=hit"
+    status_code: 201
+    headers:
+      Content-Type: "application/x-www-form-urlencoded"
+    validate_certs: no
+  tags:
+     - 3scale_config
+- name: Create Method - Car
+  uri:
+    url: "http://system-provider.3scale.svc.cluster.local:3000/admin/api/services/{{ service.json.service.id }}/metrics/{{ metric_id  }}/methods.json"
+    method: POST
+    body: "access_token={{access_token.stdout}}&friendly_name=Book+Car&system_name=book_car&unit=hit"
+    status_code: 201
+    headers:
+      Content-Type: "application/x-www-form-urlencoded"
+    validate_certs: no
+  tags:
+     - 3scale_config
+- name: Create Method - Flight
+  uri:
+    url: "http://system-provider.3scale.svc.cluster.local:3000/admin/api/services/{{ service.json.service.id }}/metrics/{{ metric_id  }}/methods.json"
+    method: POST
+    body: "access_token={{access_token.stdout}}&friendly_name=Book+Flight&system_name=book_flight&unit=hit"
+    status_code: 201
+    headers:
+      Content-Type: "application/x-www-form-urlencoded"
+    validate_certs: no
+  tags:
+     - 3scale_config
+- name: Create Method - Bookings
+  uri:
+    url: "http://system-provider.3scale.svc.cluster.local:3000/admin/api/services/{{ service.json.service.id }}/metrics/{{ metric_id  }}/methods.json"
+    method: POST
+    body: "access_token={{access_token.stdout}}&friendly_name=Booking&system_name=bookings&unit=hit"
+    status_code: 201
+    headers:
+      Content-Type: "application/x-www-form-urlencoded"
+    validate_certs: no
+  tags:
+     - 3scale_config
+- name: Create Method - Discount
+  uri:
+    url: "http://system-provider.3scale.svc.cluster.local:3000/admin/api/services/{{ service.json.service.id }}/metrics/{{ metric_id  }}/methods.json"
+    method: POST
+    body: "access_token={{access_token.stdout}}&friendly_name=Discount&system_name=discount&unit=hit"
+    status_code: 201
+    headers:
+      Content-Type: "application/x-www-form-urlencoded"
+    validate_certs: no
+  tags:
+     - 3scale_config
+- name: Create Account Plan
+  uri:
+    url: "http://system-provider.3scale.svc.cluster.local:3000/admin/api/account_plans.json"
+    method: POST
+    body: "access_token={{access_token.stdout}}&name=RHTravel+Premium+Plan&system_name=rhtravel_premium"
+    status_code: 201
+    headers:
+      Content-Type: "application/x-www-form-urlencoded"
+    validate_certs: no
+  register: account_plan
+  tags:
+     - 3scale_config
+- set_fact:
+    account_plan_id: "{{ account_plan.json |  json_query('account_plan.id') }}"
+  tags:
+     - 3scale_config
+- name: Create Application Plan
+  uri:
+    url: "http://system-provider.3scale.svc.cluster.local:3000/admin/api/services/{{ service_id }}/application_plans.json"
+    method: POST
+    body: "access_token={{access_token.stdout}}&name=RH+Travel+Premium+Plan&system_name=rhtravel_premium_plan"
+    status_code: 201
+    headers:
+      Content-Type: "application/x-www-form-urlencoded"
+    validate_certs: no
+  register: application_plan
+  tags:
+     - 3scale_config
+- set_fact:
+    application_plan_id: "{{ application_plan.json |  json_query('application_plan.id') }}"
+  tags:
+     - 3scale_config
+- name: Create Service Plan
+  uri:
+    url: "http://system-provider.3scale.svc.cluster.local:3000/admin/api/services/{{ service_id }}/service_plans.json"
+    method: POST
+    body: "access_token={{access_token.stdout}}&name=RHTravel+Service+Plan&system_name=rhtravel_service_plan"
+    status_code: 201
+    headers:
+      Content-Type: "application/x-www-form-urlencoded"
+    validate_certs: no
+  register: service_plan
+  tags:
+     - 3scale_config
+- set_fact:
+    service_plan_id: "{{ service_plan.json |  json_query('service_plan.id') }}"
+  tags:
+     - 3scale_config
+- name: Create Account
+  uri:
+    url: "http://system-provider.3scale.svc.cluster.local:3000/admin/api/signup.json"
+    method: POST
+    body: "access_token={{access_token.stdout}}&org_name=RH+Travel&username=rhtravel&email=rhtravel%40rhtravel.com&password=rhtravel%40rhtravel.com&account_plan_id={{ account_plan_id }}&service_plan_id={{ service_plan_id }}&application_plan_id={{ application_plan_id}}"
+    status_code: 201
+    headers:
+      Content-Type: "application/x-www-form-urlencoded"
+    validate_certs: no
+  register: account
+  tags:
+     - 3scale_config

@@ -16,6 +16,7 @@
           - check
   roles: 
      - 3scale
+     - 3scale_config
      - rhmap_core
      - rhmap_mbaas
      - tower
