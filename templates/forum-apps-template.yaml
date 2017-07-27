@@ -629,6 +629,8 @@ objects:
     to:
       kind: Service
       name: fuse
+    tls:
+      termination: edge
 - apiVersion: v1
   kind: ImageStream
   metadata:
