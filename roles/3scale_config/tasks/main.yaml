@@ -102,7 +102,7 @@
   uri:
     url: "http://system-provider.3scale.svc.cluster.local:3000/admin/api/services/{{ service.json.service.id }}/metrics/{{ metric_id  }}/methods.json"
     method: POST
-    body: "access_token={{access_token.stdout}}&friendly_name=Booking&system_name=bookings&unit=hit"
+    body: "access_token={{access_token.stdout}}&friendly_name=Booking&system_name=booking&unit=hit"
     status_code: 201
     headers:
       Content-Type: "application/x-www-form-urlencoded"
