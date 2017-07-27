@@ -188,11 +188,6 @@
     account_id: "{{ account.json | json_query('account.id') }}"
   tags:
     - 3scale_config
-- name: Wait for Account creation
-  pause:
-    seconds: 10
-  tags:
-    - 3scale_config
 - debug:
     msg: "params: app_plan_id: {{application_plan_id}}, "
   tags:
@@ -261,14 +256,19 @@
     url: "https://raw.githubusercontent.com/latam-tech-office/forum2017/master/rhtravel_swagger.json"
     method: GET
     status_code: 200
+    return_content: yes
   register: fuse_swagger_doc
   tags: 
+    - 3scale_config
+- debug:
+    msg: "spec: {{fuse_swagger_doc.content}}"
+  tags:
     - 3scale_config
 - name: Crete ActiveDocs Spec
   uri:
     url: "http://system-provider.3scale.svc.cluster.local:3000/admin/api/active_docs.json"
     method: POST
-    body: "access_token={{access_token.stdout}}&name=RHTravelSpec&system_name=rhtravel_spec&description=RH+Travel+ActiveDocs&published=true&body={{ fuse_swagger_doc }}"
+    body: "access_token={{access_token.stdout}}&name=RHTravelSpec&system_name=rhtravel_spec&description=RH+Travel+ActiveDocs&published=true&body={{ fuse_swagger_doc.content| urlencode }}"
     status_code: 201
     headers:
       Content-Type: "application/x-www-form-urlencoded"
