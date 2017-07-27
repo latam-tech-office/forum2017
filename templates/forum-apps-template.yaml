@@ -39,6 +39,10 @@ parameters:
   displayName: 3scale Application User Key
   description: "The User Key for the Application defined in 3Scale AMP"
   required: true
+- name: "THREESCALE_HOST"
+  displayName: 3scale host
+  description: "The 3scale admin host (if empty, will use SaaS version)"
+  required: false
 objects:
 # BRMS BRMS BRMS BRMS BRMS BRMS BRMS BRMS BRMS BRMS BRMS BRMS BRMS BRMS BRMS BRMS BRMS 
 #    BRMS BRMS BRMS BRMS BRMS BRMS BRMS BRMS BRMS BRMS BRMS BRMS BRMS BRMS BRMS BRMS BRMS 
@@ -744,6 +748,10 @@ objects:
             -
               name: SERVICE_TOKEN
               value: "${SERVICE_TOKEN}"
+            -
+              name: THREESCALE_HOST
+              value: "${THREESCALE_HOST}"
+
           ports:
           - containerPort: 8778
             name: jolokia
