@@ -102,6 +102,7 @@ microservices_namespace: microservices
 fuse_service_id: 
 fuse_service_token: 
 fuse_user_key: 
+fuse_threescale_host: system-provider.3scale.svc.cluster.local
 
 ### 3SCALE  3SCALE  3SCALE  3SCALE  3SCALE  3SCALE  3SCALE  3SCALE  3SCALE  3SCALE  3SCALE  3SCALE  3SCALE  3SCALE 
 ###  3SCALE  3SCALE  3SCALE  3SCALE  3SCALE  3SCALE  3SCALE  3SCALE  3SCALE  3SCALE  3SCALE  3SCALE  3SCALE  3SCALE
