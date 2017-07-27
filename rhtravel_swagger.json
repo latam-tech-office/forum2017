@@ -1,0 +1,387 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "Book trips",
+    "version": "1.0.0",
+    "title": "RH Travel Agency API"
+  },
+  "host": "fuse-microservices.cloudapps.forum.rhtechofficelatam.com",
+  "tags": [
+    {
+      "name": "booking"
+    }
+  ],
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/rest/": {
+      "get": {
+        "tags": [
+          "booking"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Output type",
+            "schema": {
+              "type": "string",
+              "format": "java.lang.String"
+            }
+          }
+        }
+      }
+    },
+    "/rest/book": {
+      "post": {
+        "tags": [
+          "booking"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/BookingReq"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Output type",
+            "schema": {
+              "$ref": "#/definitions/BookingResp"
+            }
+          }
+        }
+      }
+    },
+    "/rest/car": {
+      "post": {
+        "tags": [
+          "booking"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CarReq"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Output type",
+            "schema": {
+              "$ref": "#/definitions/CarResp"
+            }
+          }
+        }
+      }
+    },
+    "/rest/discounts": {
+      "post": {
+        "tags": [
+          "booking"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/BookingResp"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Output type",
+            "schema": {
+              "$ref": "#/definitions/BookingResp"
+            }
+          }
+        }
+      }
+    },
+    "/rest/flight": {
+      "post": {
+        "tags": [
+          "booking"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/FlightReq"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Output type",
+            "schema": {
+              "$ref": "#/definitions/FlightResp"
+            }
+          }
+        }
+      }
+    },
+    "/rest/hotel": {
+      "post": {
+        "tags": [
+          "booking"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/HotelReq"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Output type",
+            "schema": {
+              "$ref": "#/definitions/HotelResp"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "CarResp": {
+      "type": "object",
+      "properties": {
+        "carResCode": {
+          "type": "string"
+        },
+        "carPrice": {
+          "type": "number",
+          "format": "double"
+        },
+        "carResStatus": {
+          "type": "string"
+        },
+        "carDisc": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "carRentalCo": {
+          "type": "string"
+        },
+        "carType": {
+          "type": "string"
+        },
+        "carCity": {
+          "type": "string"
+        },
+        "carStartDate": {
+          "type": "string"
+        },
+        "carDays": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "FlightResp": {
+      "type": "object",
+      "properties": {
+        "flightResCode": {
+          "type": "string"
+        },
+        "flightPrice": {
+          "type": "number",
+          "format": "double"
+        },
+        "flightResStatus": {
+          "type": "string"
+        },
+        "flightDisc": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "flightNo": {
+          "type": "string"
+        },
+        "flightDate": {
+          "type": "string"
+        },
+        "flightFrom": {
+          "type": "string"
+        },
+        "flightTo": {
+          "type": "string"
+        },
+        "flightPassengers": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "xml": {
+        "name": "FlightResp"
+      }
+    },
+    "HotelResp": {
+      "type": "object",
+      "properties": {
+        "hotelResCode": {
+          "type": "string"
+        },
+        "hotelPrice": {
+          "type": "number",
+          "format": "double"
+        },
+        "hotelResStatus": {
+          "type": "string"
+        },
+        "hotelDisc": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "hotelArrivalDate": {
+          "type": "string"
+        },
+        "hotelNights": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "hotelCity": {
+          "type": "string"
+        },
+        "hotelId": {
+          "type": "string"
+        }
+      }
+    },
+    "BookingResp": {
+      "type": "object",
+      "properties": {
+        "flightResp": {
+          "$ref": "#/definitions/FlightResp"
+        },
+        "hotelResp": {
+          "$ref": "#/definitions/HotelResp"
+        },
+        "carResp": {
+          "$ref": "#/definitions/CarResp"
+        }
+      },
+      "x-className": {
+        "type": "string",
+        "format": "com.redhat.travelagency.model.BookingResp"
+      }
+    },
+    "BookingReq": {
+      "type": "object",
+      "properties": {
+        "flightReq": {
+          "$ref": "#/definitions/FlightReq"
+        },
+        "hotelReq": {
+          "$ref": "#/definitions/HotelReq"
+        },
+        "carReq": {
+          "$ref": "#/definitions/CarReq"
+        }
+      },
+      "x-className": {
+        "type": "string",
+        "format": "com.redhat.travelagency.model.BookingReq"
+      }
+    },
+    "HotelReq": {
+      "type": "object",
+      "properties": {
+        "hotelArrivalDate": {
+          "type": "string"
+        },
+        "hotelNights": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "hotelCity": {
+          "type": "string"
+        },
+        "hotelId": {
+          "type": "string"
+        }
+      }
+    },
+    "FlightReq": {
+      "type": "object",
+      "properties": {
+        "flightNo": {
+          "type": "string"
+        },
+        "flightDate": {
+          "type": "string"
+        },
+        "flightFrom": {
+          "type": "string"
+        },
+        "flightTo": {
+          "type": "string"
+        },
+        "flightPassengers": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "CarReq": {
+      "type": "object",
+      "properties": {
+        "carRentalCo": {
+          "type": "string"
+        },
+        "carType": {
+          "type": "string"
+        },
+        "carCity": {
+          "type": "string"
+        },
+        "carStartDate": {
+          "type": "string"
+        },
+        "carDays": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    }
+  }
+}

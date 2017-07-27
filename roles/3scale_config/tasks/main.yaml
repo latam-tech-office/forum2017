@@ -39,8 +39,26 @@
     msg: "service ID: {{ service_id }}"
   tags:
      - 3scale_config
+- lineinfile:
+    dest: group_vars/all
+    regexp: '^fuse_service_id:'
+    line: "fuse_service_id: {{ fuse_service_id }}"
+  tags:
+    - 3scale_config
+- name: Get Metric ID
+  uri:
+    url: "http://system-provider.3scale.svc.cluster.local:3000/admin/api/services/{{ service_id }}/metrics.json"
+    method: GET
+    body: "access_token={{access_token.stdout}}"
+    status_code: 200
+    headers:
+      Content-Type: "application/x-www-form-urlencoded"
+    validate_certs: no
+  register: metric
+  tags:
+    - 3scale_config
 - set_fact: 
-    metric_id: "{{ service.json|json_query(\"service.links[?rel=='metrics'].href | [0]\")|regex_replace('.*/services/(.*)/metrics','\\1')  }}"
+    metric_id: "{{metric.json | json_query('metrics[0].metric.id')}}"
   tags:
      - 3scale_config
 - debug:
@@ -118,6 +136,10 @@
     account_plan_id: "{{ account_plan.json |  json_query('account_plan.id') }}"
   tags:
      - 3scale_config
+- debug:
+    msg: "Account Plan ID: {{account_plan_id}}"
+  tags:
+     - 3scale_config
 - name: Create Application Plan
   uri:
     url: "http://system-provider.3scale.svc.cluster.local:3000/admin/api/services/{{ service_id }}/application_plans.json"
@@ -166,11 +188,20 @@
     account_id: "{{ account.json | json_query('account.id') }}"
   tags:
     - 3scale_config
+- name: Wait for Account creation
+  pause:
+    seconds: 10
+  tags:
+    - 3scale_config
+- debug:
+    msg: "params: app_plan_id: {{application_plan_id}}, "
+  tags:
+    - 3scale_config
 - name: Create Application
   uri:
     url: "http://system-provider.3scale.svc.cluster.local:3000/admin/api/accounts/{{ account_id }}/applications.json"
     method: POST
-    body: "access_token={{access_token.stdout}}&application_plan_id={{ application_plan_id}}&name=RHTravel&description=RHTravel+App"
+    body: "access_token={{access_token.stdout}}&plan_id={{ application_plan_id}}&name=RHTravel&description=RHTravel+App"
     status_code: 201
     headers:
       Content-Type: "application/x-www-form-urlencoded"
@@ -182,3 +213,67 @@
     fuse_user_key: "{{ application.json | json_query('application.user_key') }}"
   tags:
     - 3scale_config
+- lineinfile:
+    dest: group_vars/all
+    regexp: '^fuse_user_key:'
+    line: "fuse_user_key: {{ fuse_user_key }}"
+  tags:
+    - 3scale_config
+- name: Configure Proxy
+  uri:
+    url: "http://system-provider.3scale.svc.cluster.local:3000/admin/api/services/{{ service_id }}/proxy.json"
+    method: PATCH
+    body: "access_token={{access_token.stdout}}&api_backend=http%3A%2F%2Ffuse.microservices.svc.cluster.local%3A8182"
+    status_code: 200
+    headers:
+      Content-Type: "application/x-www-form-urlencoded"
+    validate_certs: no
+  tags:
+     - 3scale_config
+- name: Read Proxy latest config
+  uri:
+    url: "http://system-provider.3scale.svc.cluster.local:3000/admin/api/services/{{ service_id }}/proxy/configs/sandbox/latest.json"
+    method: GET
+    body: "access_token={{access_token.stdout}}"
+    status_code: 200
+    headers:
+      Content-Type: "application/x-www-form-urlencoded"
+    validate_certs: no
+  register: proxy_config
+  tags:
+     - 3scale_config
+- set_fact:
+    fuse_service_token: "{{ proxy_config.json | json_query('proxy_config.content.backend_authentication_value') }}"
+  tags:
+    - 3scale_config
+- debug:
+    msg: "service_token: {{fuse_service_token}}"
+  tags:
+    - 3scale_config
+- lineinfile:
+    dest: group_vars/all
+    regexp: '^fuse_service_token:'
+    line: "fuse_service_token: {{ fuse_service_token }}"
+  tags:
+    - 3scale_config
+- name: Get Fuse Swagger Doc
+  uri:
+    url: "https://raw.githubusercontent.com/latam-tech-office/forum2017/master/rhtravel_swagger.json"
+    method: GET
+    status_code: 200
+  register: fuse_swagger_doc
+  tags: 
+    - 3scale_config
+- name: Crete ActiveDocs Spec
+  uri:
+    url: "http://system-provider.3scale.svc.cluster.local:3000/admin/api/active_docs.json"
+    method: POST
+    body: "access_token={{access_token.stdout}}&name=RHTravelSpec&system_name=rhtravel_spec&description=RH+Travel+ActiveDocs&published=true&body={{ fuse_swagger_doc }}"
+    status_code: 201
+    headers:
+      Content-Type: "application/x-www-form-urlencoded"
+    validate_certs: no
+  register: active_docs_spec
+  tags:
+     - 3scale_config
+
