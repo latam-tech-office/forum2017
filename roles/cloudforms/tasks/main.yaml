@@ -187,29 +187,29 @@
     password: "{{ cloudforms_password }}"
     force_basic_auth: yes
     status_code: 200
-    body: '{"type":"ManageIQ::Providers::OpenshiftEnterprise::ContainerManager","name":"OpenShift 3.4 Container Platform","connection_configurations" : [{"endpoint": {"role": "default","hostname":"openshift.default.svc.cluster.local","port":"443"},"authentication": {"role": "bearer","auth_key": "{{ management_infra_token.stdout }}"}},{"endpoint": {"role": "hawkular","hostname":"hawkular-metrics.openshift-infra.svc.cluster.local","port": "443"},"authentication": {"role": "hawkular","auth_key": "{{ management_infra_token.stdout }}"}}]}'
+    body: '{"type":"ManageIQ::Providers::Openshift::ContainerManager","name":"OpenShift Container Platform","connection_configurations" : [{"endpoint": {"role": "default","hostname":"openshift.default.svc.cluster.local","port":"443","security_protocol": "ssl-without-validation"},"authentication": {"role": "bearer","auth_key": "{{ management_infra_token.stdout }}"}},{"endpoint": {"role": "hawkular","hostname":"hawkular-metrics.openshift-infra.svc.cluster.local","port": "443","security_protocol": "ssl-without-validation"},"authentication": {"role": "hawkular","auth_key": "{{ management_infra_token.stdout }}"}}]}'
   tags:
        - cloudforms
        - configcloudforms
        - createproviderscloudforms 
        
-- name: Adding Ansible Tower Provider to CloudForms
-  uri:
-    method: POST
-    body_format: json
-    HEADER_Content-Type: application/json
-    validate_certs: no
-    return_content: yes
-    url: "{{ cloudforms_full_url }}/api/providers?provider_class=provider"
-    user: "{{ cloudforms_username }}"
-    password: "{{ cloudforms_password }}"
-    force_basic_auth: yes
-    status_code: 200
-    body: '{"type":"ManageIQ::Providers::AnsibleTower::Provider","name":"Ansible Tower 3","url":"http://towerweb.ansible-tower.svc.cluster.local/api/v1","credentials": {"userid":"admin","password":"password"}}'
-  tags:
-       - cloudforms
-       - configcloudforms
-       - createproviderscloudforms
+#- name: Adding Ansible Tower Provider to CloudForms
+#  uri:
+#    method: POST
+#    body_format: json
+#    HEADER_Content-Type: application/json
+#    validate_certs: no
+#    return_content: yes
+#    url: "{{ cloudforms_full_url }}/api/providers?provider_class=provider"
+#    user: "{{ cloudforms_username }}"
+#    password: "{{ cloudforms_password }}"
+#    force_basic_auth: yes
+#    status_code: 200
+#    body: '{"type":"ManageIQ::Providers::AnsibleTower::Provider","name":"Ansible Tower 3","url":"http://towerweb.ansible-tower.svc.cluster.local/api/v1","credentials": {"userid":"admin","password":"password"}}'
+#  tags:
+#       - cloudforms
+#       - configcloudforms
+#       - createproviderscloudforms
 
 - name: Adding Service Catalog to CloudForms
   uri:
