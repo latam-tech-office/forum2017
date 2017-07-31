@@ -594,8 +594,8 @@ objects:
               image: "registry.access.redhat.com/3scale-amp20/system:1.0-2"
               imagePullPolicy: IfNotPresent
               livenessProbe: 
-                initialDelaySeconds: 60
-                periodSeconds: 10
+                initialDelaySeconds: 600
+                periodSeconds: 20
                 tcpSocket: 
                   port: 9306
               name: system-sphinx
@@ -1345,11 +1345,11 @@ objects:
               image: "registry.access.redhat.com/3scale-amp20/system:1.0-2"
               imagePullPolicy: IfNotPresent
               livenessProbe: 
-                initialDelaySeconds: 20
-                periodSeconds: 10
+                initialDelaySeconds: 200
+                periodSeconds: 20
                 tcpSocket: 
                   port: provider
-                timeoutSeconds: 10
+                timeoutSeconds: 20
               name: system-provider
               ports: 
                 - 
@@ -1365,9 +1365,9 @@ objects:
                   path: /check.txt
                   port: provider
                   scheme: HTTP
-                initialDelaySeconds: 30
-                periodSeconds: 30
-                timeoutSeconds: 10
+                initialDelaySeconds: 300
+                periodSeconds: 40
+                timeoutSeconds: 20
               volumeMounts: 
                 - 
                   mountPath: /opt/system/public/system
@@ -1499,11 +1499,11 @@ objects:
               image: "registry.access.redhat.com/3scale-amp20/system:1.0-2"
               imagePullPolicy: IfNotPresent
               livenessProbe: 
-                initialDelaySeconds: 20
-                periodSeconds: 10
+                initialDelaySeconds: 200
+                periodSeconds: 20
                 tcpSocket: 
                   port: developer
-                timeoutSeconds: 10
+                timeoutSeconds: 20
               name: system-developer
               ports: 
                 - 
@@ -1519,9 +1519,9 @@ objects:
                   path: /check.txt
                   port: developer
                   scheme: HTTP
-                initialDelaySeconds: 30
-                periodSeconds: 30
-                timeoutSeconds: 10
+                initialDelaySeconds: 300
+                periodSeconds: 50
+                timeoutSeconds: 20
               volumeMounts: 
                 - 
                   mountPath: /opt/system/public/system
