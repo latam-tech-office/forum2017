@@ -1,0 +1,83 @@
+---
+- name: Preparing environment for Demo purposes
+  hosts: localhost
+  connection: local
+  gather_facts: False
+  vars:
+     jenkins_pipeline: "tooling-forum-pipeline"
+     jenkins_username: "admin"
+     jenkins_password: "password"
+  tasks:
+     - name: Delete the current pipeline in Jenkins 
+       uri:
+         url: http://jenkins.{{ tooling_namespace }}.svc.cluster.local:80/job/{{ jenkins_pipeline }}/doDelete
+         follow_redirects: False
+         method: POST
+         user: "{{ jenkins_username }}"
+         password: "{{ jenkins_password }}"
+         force_basic_auth: True
+         status_code: 302
+       ignore_errors: True
+       tags:
+          - pipeline
+          - pipeline_delete
+
+     - name: Delete a current Pipeline into Tooling namespace
+       command: oc delete buildconfig/forum-pipeline --namespace {{ tooling_namespace }}
+       ignore_errors: True
+       tags:
+          - pipeline
+          - pipeline_delete
+
+     - set_fact: gogs_url="http{{ ':' }}//gogs.{{ tooling_namespace }}.svc.cluster.local:3000"
+       tags:
+          - pipeline
+          - pipeline_create
+
+     - name: Creating Jenkins Pipeline
+       command: oc new-app --file=templates/tooling-pipeline-template.yaml --param=GOGS_USERNAME={{ username }} --param=CLOUDAPPS_NAMESPACE={{ tooling_namespace }} --param=GOGS_URL={{ gogs_url }} --param=MICROSERVICES_NAMESPACE={{ microservices_namespace }} --namespace {{ tooling_namespace }}
+       tags:
+          - pipeline
+          - pipeline_create
+
+     - name: Delete Namespace Microservices
+       command: oc delete project {{ microservices_namespace }}
+       ignore_errors: True
+       tags:
+          - microservices
+
+     - name: Fetch where the information is stored
+       command: oc get pvc/business-central --output jsonpath='{.spec.volumeName}' --namespace {{ businesscentral_namespace }}
+       register: pvc_businesscentral
+       tags:
+          - business_central
+
+     - set_fact: directory_businesscentral=/var/storage/{{ pvc_businesscentral.stdout }}/brms.git
+       tags:
+          - business_central
+
+     - name: Delete any existing directories{{ ':' }} {{ directory_businesscentral }}
+       file: path={{ directory_businesscentral }} state=absent
+       ignore_errors: True
+       tags:
+          - business_central
+
+     - name: Git clone the content from BRMS Project into {{ ':' }} {{ directory_businesscentral }}
+       command: git clone http://gogs.tooling.svc.cluster.local:3000/demo/brms.git --bare {{ directory_businesscentral }}
+       tags:
+          - business_central
+
+     - name: Setting the Origin into Git http://{{ username }}:{{ password }}@gogs.{{ tooling_namespace }}.svc.cluster.local:3000/{{ username }}/brms.git
+       shell: pushd {{ directory_businesscentral }}; git remote set-url origin 'http://{{ username }}:{{ password }}@gogs.{{ tooling_namespace }}.svc.cluster.local:3000/{{ username }}/brms.git'; popd
+       tags:
+          - business_central
+
+     - name: Generating content for post-commit
+       copy: dest={{ directory_businesscentral }}/hooks/post-commit content="#!/bin/sh\ngit push origin master" mode="u+x"
+       tags:
+          - business_central
+
+     - name: Getting the permissions right into this directory
+       file: path={{ directory_businesscentral }} mode="777" owner="nfsnobody" group="nfsnobody" recurse="yes"     
+       tags:
+          - business_central
