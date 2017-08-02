@@ -78,7 +78,7 @@ parameters:
 - description: Name of the ImageStreamTag to be used for the Jenkins image.
   displayName: Jenkins ImageStreamTag
   name: JENKINS_IMAGE_STREAM_TAG
-  value: jenkins:latest
+  value: jenkins:2.32-7
 objects:
 ### JENKINS JENKINS JENKINS JENKINS JENKINS JENKINS JENKINS JENKINS JENKINS JENKINS 
 ###   JENKINS JENKINS JENKINS JENKINS JENKINS JENKINS JENKINS JENKINS JENKINS JENKINS 
@@ -136,6 +136,9 @@ objects:
             value: "true"
           - name: JNLP_SERVICE_NAME
             value: ${JNLP_SERVICE_NAME}
+          - name: MAVEN_SLAVE_IMAGE
+            value: registry.access.redhat.com/openshift3/jenkins-slave-maven-rhel7:3.3-19
+
           image: ' '
           imagePullPolicy: IfNotPresent
           livenessProbe:
