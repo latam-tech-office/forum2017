@@ -3,7 +3,14 @@
   ignore_errors: True
   tags:
      - tooling
-
+- name: Change project
+  command: oc project openshift
+  tags:
+    - tooling
+- name: Import Jenkins Image
+  command: oc import-image jenkins:2.32-7 --from=registry.access.redhat.com/openshift3/jenkins-2-rhel7 --confirm
+  tags:
+    - tooling
 - name: Creating the Project{{ ':' }} {{ tooling_namespace }} 
   command: oadm new-project {{ tooling_namespace }} --display-name="Tooling{{ ":" }} LATAM Red Hat Forum 2017" --admin={{ username }} 
   register: create_namespace
