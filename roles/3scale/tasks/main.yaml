@@ -14,6 +14,6 @@
      - 3scale
 
 - name: Create a New Application based on the template
-  command: oc new-app --namespace {{ threescale_namespace }} --file=templates/amp_cors.yml --param=ADMIN_PASSWORD=admin --param=WILDCARD_DOMAIN=3scale.cloudapps.forum.rhtechofficelatam.com
+  command: oc new-app --namespace {{ threescale_namespace }} --file=templates/amp_cors.yml --param=ADMIN_PASSWORD=admin --param=WILDCARD_DOMAIN=3scale.{{ openshift_cloudapps_domain }}
   tags:
      - 3scale

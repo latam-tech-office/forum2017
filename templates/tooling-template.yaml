@@ -54,6 +54,11 @@ parameters:
   generate: expression
   name: GOGS_POSTGRESQL_PASSWORD
   required: true
+- name: GOGS_VERSION
+  displayName: Gogs Version
+  description: 'Version of the Gogs container image to be used (check the available version https://hub.docker.com/r/openshiftdemos/gogs/tags)'
+  value: "0.9.97"
+  required: true
 - description: The name of the OpenShift Service exposed for the Jenkins container.
   displayName: Jenkins Service Name
   name: JENKINS_SERVICE_NAME
@@ -465,12 +470,12 @@ objects:
     - annotations:
         description: The Gogs git server docker image
         tags: gogs,go,golang
-        version: "latest"
+        version: "${GOGS_VERSION}"
       from:
         kind: DockerImage
-        name: openshiftdemos/gogs:latest
+        name: docker.io/openshiftdemos/gogs:${GOGS_VERSION}
       importPolicy: {}
-      name: "latest"
+      name: "${GOGS_VERSION}"
 - apiVersion: v1
   kind: DeploymentConfig
   metadata:
@@ -543,7 +548,7 @@ objects:
         - gogs
         from:
           kind: ImageStreamTag
-          name: gogs:latest
+          name: gogs:${GOGS_VERSION}
       type: ImageChange
   status: {}
 - apiVersion: v1

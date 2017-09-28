@@ -11,7 +11,7 @@ username: demo
 password: R3dh4t1!
 
 ### OPENSHIFT OPENSHIFT OPENSHIFT OPENSHIFT OPENSHIFT OPENSHIFT OPENSHIFT OPENSHIFT 
-openshift_domain: forum.rhtechofficelatam.com
+openshift_domain: demo.rhcol.com
 openshift_cloudapps_domain: cloudapps.{{ openshift_domain }}
 openshift_master_hostname: openshift.{{ openshift_domain }}
 openshift_master_username: root
@@ -76,7 +76,7 @@ ansibletower_license_file: license_b4451138a0004212ac8476cc275a08e9.txt
 ansibletower_username: admin
 ansibletower_password: password
 ansibletower_web_service: towerweb
-ansibletower_openshift_master: master.{{ openshift_domain }}
+ansibletower_openshift_master: openshift.{{ openshift_domain }}
 
 ### TOOLING TOOLING TOOLING TOOLING TOOLING TOOLING TOOLING TOOLING TOOLING TOOLING
 ###   TOOLING TOOLING TOOLING TOOLING TOOLING TOOLING TOOLING TOOLING TOOLING TOOLING 
@@ -99,11 +99,12 @@ jboss_installers:
 ### MICROSERVICES MICROSERVICES MICROSERVICES MICROSERVICES MICROSERVICES MICROSERVICES MICROSERVICES
 ###    MICROSERVICES MICROSERVICES MICROSERVICES MICROSERVICES MICROSERVICES MICROSERVICES MICROSERVICES  
 microservices_namespace: microservices
-fuse_service_id: 
-fuse_service_token: 
-fuse_user_key: 
+fuse_service_id: 3
+fuse_service_token: 31b73d65fdc7566d2c2e586183318c6cfc1079b4f16a9013815c2817636211ff
+fuse_user_key: 2d5364055f80826e91a887c493d00663
 fuse_threescale_host: backend-listener.3scale.svc.cluster.local
 
 ### 3SCALE  3SCALE  3SCALE  3SCALE  3SCALE  3SCALE  3SCALE  3SCALE  3SCALE  3SCALE  3SCALE  3SCALE  3SCALE  3SCALE 
 ###  3SCALE  3SCALE  3SCALE  3SCALE  3SCALE  3SCALE  3SCALE  3SCALE  3SCALE  3SCALE  3SCALE  3SCALE  3SCALE  3SCALE
 3scale_namespace: 3scale
+threescale_namespace: 3scale
