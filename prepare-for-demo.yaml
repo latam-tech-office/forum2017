@@ -67,8 +67,8 @@
        tags:
           - business_central
 
-     - name: Setting the Origin into Git http://{{ username }}:{{ password }}@gogs.{{ tooling_namespace }}.svc.cluster.local:3000/{{ username }}/brms.git
-       shell: pushd {{ directory_businesscentral }}; git remote set-url origin 'http://{{ username }}:{{ password }}@gogs.{{ tooling_namespace }}.svc.cluster.local:3000/{{ username }}/brms.git'; popd
+     - name: Setting the Origin into Git http://{{ username }}:R3dh4t1!@gogs.{{ tooling_namespace }}.svc.cluster.local:3000/{{ username }}/brms.git
+       shell: pushd {{ directory_businesscentral }}; git remote set-url origin 'http://{{ username }}:R3dh4t1!@gogs.{{ tooling_namespace }}.svc.cluster.local:3000/{{ username }}/brms.git'; popd
        tags:
           - business_central
 
